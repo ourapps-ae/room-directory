@@ -1,0 +1,153 @@
+{
+  "name": "room-directory",
+  "version": "0.3.0",
+  "title": "Room directory",
+  "description": "Lists open rooms, announces changes to watching screens and lets a person join by code.",
+  "facilities": [
+    {
+      "id": "room-directory",
+      "description": "Room list, live change announcements and join by code"
+    }
+  ],
+  "provides": [
+    {
+      "id": "room-directory",
+      "type": "ae/room-directory",
+      "version": "1.0.0",
+      "path": "interfaces/room-directory.json"
+    }
+  ],
+  "requires": [
+    {
+      "id": "room-session",
+      "type": "ae/room-session",
+      "version": "1.0.0",
+      "path": "interfaces/required/room-session.json"
+    }
+  ],
+  "collect": [
+    {
+      "id": "roomCapacity",
+      "type": "integer",
+      "grammar": "integer",
+      "required": false,
+      "secret": false,
+      "default": 9
+    },
+    {
+      "id": "maxConnections",
+      "type": "integer",
+      "grammar": "integer",
+      "required": false,
+      "secret": false,
+      "default": 1000
+    }
+  ],
+  "platforms": [
+    "server",
+    "web",
+    "apple",
+    "android"
+  ],
+  "tools": {
+    "node": "26.5.0",
+    "python3": "3.12.8",
+    "swiftc": "6.4.2",
+    "kotlinc": "2.2.0",
+    "java": "26.0.1"
+  },
+  "suites": [
+    {
+      "id": "web",
+      "argv": [
+        "node",
+        "--test",
+        "tests/web.test.ts"
+      ],
+      "tools": {
+        "node": "26.5.0"
+      },
+      "scope": "required-local",
+      "fixtures": [
+        "examples/consumer.ts",
+        "tests/fixtures/rooms.json"
+      ]
+    },
+    {
+      "id": "apple",
+      "argv": [
+        "python3",
+        "tests/native.py",
+        "apple"
+      ],
+      "tools": {
+        "python3": "3.12.8",
+        "swiftc": "6.4.2"
+      },
+      "fixtures": [
+        "tests/apple/main.swift"
+      ],
+      "scope": "platform"
+    },
+    {
+      "id": "android",
+      "argv": [
+        "python3",
+        "tests/native.py",
+        "android"
+      ],
+      "tools": {
+        "python3": "3.12.8",
+        "kotlinc": "2.2.0",
+        "java": "26.0.1"
+      },
+      "fixtures": [
+        "tests/android/Main.kt"
+      ],
+      "scope": "platform"
+    }
+  ],
+  "infrastructure": {
+    "accounts": [
+      "Cloudflare for deployment of the directory object"
+    ],
+    "deployedReason": "Local library and a runtime-agnostic directory object; deployment of the object needs an authorised hosting account."
+  },
+  "text": {
+    "purpose": "`room-directory` keeps one summary of every room (id, status, player count, names, optional join code), tells every watching home screen the whole list again after each change, and answers what the enter button should do (join, rejoin, watch, full) and which room a typed code names. The server part is a directory object class built on an injected runtime base class; the client parts are a list watcher for web and pure list logic for Apple and Android.",
+    "userInputs": "Two settings. `roomCapacity` is the number of seats after which an open room shows as full (default 9). `maxConnections` caps the watching connections the directory accepts (default 1000, the recipe's large band; the recipe may lower it from the scale answer).",
+    "integration": "Server: `createDirectoryClass(DurableObjectBase, { roomIds, maxConnections })` returns the directory class; rooms announce themselves with `POST` (upsert) and `DELETE ?id=`. The application can pass `roomIds` for rooms that always exist; each is asked directly the first time it is missing. Web: `watchRooms(connect, onChange)` takes a connector with the shape of the realtime-rooms `Live` class and reports only changed lists and changes of server reachability. Apple and Android: decode the `{type:\"rooms\"}` message into `RoomInfo` and use `RoomDirectory.entryAction`, `describe`, `findByCode`. `examples/consumer.ts` runs a home screen without the game. The component expects the room-session component to supply the rooms that post their entries and the `/room` summary route used to ask a missing room; it imports nothing from it.",
+    "infrastructure": "The directory object needs a hosting runtime that provides a durable object with storage and WebSocket acceptance (Cloudflare Workers in the recipe). Local tests use fakes and no accounts. Cost and capacity are unmeasured.",
+    "verification": "Required-local: `node --test tests/web.test.ts` checks list operations, join by code, entry actions, change detection, the directory object with fake storage and sockets (list, update, announce, remove, restart, upgrade and cap checks, deploy restart), the web watcher, the ndjson export and import of the stored list and the example. Platform: `python3 tests/native.py apple` compiles and runs the Swift checks against `tests/fixtures/rooms.json`; `python3 tests/native.py android` compiles the Kotlin checks (needs kotlinc, not installed on the authoring machine, so not run there).",
+    "scenarios": "A home screen shows three rooms; the second is mid-game so its button says watch; a person types a code with spaces and lower case and the right room is selected; the server restarts and the list is restored from storage; the connection drops and the screen says the server cannot be reached until the next list arrives.",
+    "updates": "Patch updates replace files. `migration.json` describes the stored room list. The stored room list is a rebuildable summary: removal can delete it with no loss."
+  },
+  "agentInstructions": "Select this component for any application that shows a list of rooms or tables before joining. Set `roomCapacity` to the number of seats of one room. Connect its `room-session` requirement to the realtime-rooms component so rooms post their entries to the directory. Pass the application's fixed room ids to `createDirectoryClass` only if rooms always exist.",
+  "developerInstructions": "Supply a durable object base class from the hosting runtime and bind the directory class under the name the rooms expect. On the home screen call `watchRooms`, render `describeRoom`, and drive the enter button from `entryAction`. For join by code, rooms must include a `code` (see the invitations component); `findByCode` ignores case, spaces and hyphens. Supply no accounts or keys; deployment uses the hosting account configured for the server host.",
+  "suitability": {
+    "format": 1,
+    "jobs": [
+      "room-directory"
+    ],
+    "profiles": [
+      {
+        "id": "any",
+        "load": {
+          "concurrentPeople": 1000
+        },
+        "cost": "none",
+        "regions": [
+          "any"
+        ],
+        "compliance": [],
+        "provider": {
+          "name": "any durable-object runtime",
+          "tier": "any",
+          "limitsSource": null
+        },
+        "notes": "Limit 1000 is the component's own default maxConnections setting (the recipe's large band), not a provider limit. No provider limits were checked for this component; whether one Cloudflare Durable Object holds 1000 hibernating connections was not checked."
+      }
+    ],
+    "notes": "Pure list logic has no cost. The directory object runs wherever the injected runtime base class exists; the recipe uses Cloudflare Durable Objects (see realtime-rooms)."
+  }
+}

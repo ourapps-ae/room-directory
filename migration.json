@@ -1,0 +1,49 @@
+{
+  "format": 1,
+  "stores": [
+    {
+      "id": "rooms",
+      "schema": {
+        "name": "ae/room-directory-state",
+        "version": "1.0.0",
+        "file": "interfaces/room-directory-state.schema.json"
+      },
+      "location": "Directory object storage, key \"rooms\", one object named \"home\" (the binding DIRECTORY); a map from room id to its entry."
+    }
+  ],
+  "export": [
+    {
+      "format": "ndjson",
+      "portable": true,
+      "operation": "exportAll",
+      "description": "implementation/server/directory-migration.ts exportAll(rooms): a header line, then one room line per room in sorted id order with a sha256 over its canonical JSON. The application reads the map with storage.get(\"rooms\") (for example from a protected route in a subclass of the directory class)."
+    }
+  ],
+  "import": [
+    {
+      "format": "ndjson",
+      "portable": true,
+      "operation": "importAll",
+      "description": "importAll(text) verifies header, count, checksums, duplicates and entry shape, then returns the map the application writes back with storage.put(\"rooms\", rooms)."
+    }
+  ],
+  "steps": [],
+  "verification": {
+    "counts": true,
+    "checksums": "sha256 per room entry over canonical JSON (keys sorted at every level)",
+    "sampleReadBack": 20,
+    "endToEnd": "tests/web.test.ts"
+  },
+  "limits": {
+    "maxMegabytes": 1,
+    "requiresStop": false,
+    "cannotPreserve": [
+      "open watcher connections (clients reconnect)",
+      "rooms that changed while the export ran (they announce themselves again)"
+    ]
+  },
+  "retention": {
+    "afterRemovalDays": 0
+  },
+  "notes": "The list is a summary the rooms re-announce, so it can be deleted with no lasting loss; afterRemovalDays is 0 for that reason. maxMegabytes is a planning figure chosen by this package (a list of a few thousand rooms), not a provider limit."
+}

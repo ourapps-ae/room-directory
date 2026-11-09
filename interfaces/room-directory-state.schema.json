@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ae/room-directory-state",
+  "title": "Room directory state 1.0.0",
+  "description": "What the directory object keeps in its own storage (key \"rooms\" of the object named \"home\") and the ndjson lines used to export and import it. The list is a rebuildable summary: each room posts its entry again when its players or status change.",
+  "version": "1.0.0",
+  "$defs": {
+    "roomEntry": {
+      "type": "object",
+      "required": [
+        "id",
+        "status",
+        "playerCount",
+        "names"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "playerCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "names": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "code": {
+          "type": "string",
+          "description": "Join code typed by people; case, spaces and hyphens do not matter."
+        }
+      },
+      "additionalProperties": false
+    },
+    "storedRooms": {
+      "description": "The value stored under key \"rooms\".",
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/roomEntry"
+      }
+    },
+    "header": {
+      "type": "object",
+      "required": [
+        "type",
+        "format",
+        "version",
+        "rooms"
+      ],
+      "properties": {
+        "type": {
+          "const": "header"
+        },
+        "format": {
+          "const": "ae/room-directory-state"
+        },
+        "version": {
+          "const": "1.0.0"
+        },
+        "rooms": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of room lines that follow."
+        }
+      },
+      "additionalProperties": false
+    },
+    "roomLine": {
+      "type": "object",
+      "required": [
+        "type",
+        "id",
+        "entry",
+        "sha256"
+      ],
+      "properties": {
+        "type": {
+          "const": "room"
+        },
+        "id": {
+          "type": "string"
+        },
+        "entry": {
+          "$ref": "#/$defs/roomEntry"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "SHA-256 of the entry as JSON with keys sorted at every level."
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/header"
+    },
+    {
+      "$ref": "#/$defs/roomLine"
+    }
+  ]
+}

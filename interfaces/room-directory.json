@@ -1,0 +1,24 @@
+{
+  "id": "room-directory",
+  "type": "ae/room-directory",
+  "version": "1.0.0",
+  "operations": {
+    "upsertRoom": { "arguments": ["rooms:Rooms", "entry:RoomEntry"], "returns": "Rooms" },
+    "removeRoom": { "arguments": ["rooms:Rooms", "id:string"], "returns": "Rooms" },
+    "listRooms": { "arguments": ["rooms:Rooms", "options:{order?:string[],openOnly?:boolean,openStatuses?:string[]}"], "returns": "RoomEntry[]" },
+    "findByCode": { "arguments": ["rooms:Rooms|RoomEntry[]", "code:string"], "returns": "RoomEntry|null" },
+    "normaliseCode": { "arguments": ["code:string"], "returns": "string" },
+    "listingChanged": { "arguments": ["previous:RoomEntry[]|null", "next:RoomEntry[]"], "returns": "boolean" },
+    "announcement": { "arguments": ["rooms:RoomEntry[]"], "returns": "string" },
+    "entryAction": { "arguments": ["room:RoomEntry|null", "myName:string", "capacity:integer", "openStatuses:string[]"], "returns": "join|rejoin|watch|full|none" },
+    "describeRoom": { "arguments": ["room:RoomEntry", "openStatuses:string[]"], "returns": "{kind:empty|inGame|lobby,names:string[]}" },
+    "createDirectoryClass": { "arguments": ["DurableObjectBase:class", "options:{roomIds?:string[],openStatuses?:string[],maxConnections:integer,askRoom?:function,accept?:function}"], "returns": "class Directory" },
+    "watchRooms": { "arguments": ["connect:Connector", "onChange:(state:{rooms:RoomEntry[]|null,down:boolean})=>void", "path:string"], "returns": "{state,sleep,wake,stop}" },
+    "roomForCode": { "arguments": ["watch:{rooms:RoomEntry[]|null,down:boolean}", "code:string"], "returns": "RoomEntry|null" }
+  },
+  "types": {
+    "RoomEntry": "{id:string,status:string,playerCount:integer,names:string[],code?:string}",
+    "Rooms": "{[id:string]:RoomEntry}",
+    "wire": "GET / returns RoomEntry[]; POST / with a RoomEntry upserts; DELETE /?id= removes; GET /ws (upgrade) sends {type:'rooms',rooms:RoomEntry[]} on connect and after every change"
+  }
+}

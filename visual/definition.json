@@ -1,0 +1,46 @@
+{
+  "id": "ourapps-ae.room-directory",
+  "name": "Room directory",
+  "kind": "component",
+  "status": "example",
+  "package": "ourapps-ae/room-directory",
+  "version": "0.3.0",
+  "ports": [
+    {
+      "id": "room-session",
+      "name": "Room session",
+      "direction": "input",
+      "kind": "interface",
+      "type": "ae/room-session",
+      "version": "1.0.0",
+      "required": true,
+      "cardinality": "one"
+    },
+    {
+      "id": "room-directory",
+      "name": "Room directory",
+      "direction": "output",
+      "kind": "interface",
+      "type": "ae/room-directory",
+      "version": "1.0.0"
+    }
+  ],
+  "settings": [
+    {
+      "id": "roomCapacity",
+      "name": "Roomcapacity",
+      "type": "number",
+      "required": false,
+      "secret": false,
+      "default": 9
+    },
+    {
+      "id": "maxConnections",
+      "name": "Maxconnections",
+      "type": "number",
+      "required": false,
+      "secret": false,
+      "default": 1000
+    }
+  ]
+}

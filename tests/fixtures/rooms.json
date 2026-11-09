@@ -1,0 +1,19 @@
+{
+  "capacity": 3,
+  "rooms": [
+    { "id": "casino", "status": "lobby", "playerCount": 0, "names": [] },
+    { "id": "home", "status": "running", "playerCount": 2, "names": ["Ann", "Bob"], "code": "KT7-Q2P" },
+    { "id": "garden", "status": "lobby", "playerCount": 3, "names": ["Cy", "Di", "Ed"], "code": "M4NW9X" },
+    { "id": "shed", "status": "lobby", "playerCount": 1, "names": ["Flo"] }
+  ],
+  "entry": [
+    ["casino", "Zed", "join"],
+    ["home", "Zed", "watch"],
+    ["home", "Ann", "rejoin"],
+    ["garden", "Zed", "full"],
+    ["garden", "Di", "rejoin"],
+    ["shed", "Zed", "join"]
+  ],
+  "describe": [["casino", "empty"], ["home", "inGame"], ["shed", "lobby"]],
+  "codes": [["kt7q2p", "home"], [" kt7 - q2p ", "home"], ["m4nw9x", "garden"], ["", null], ["nope", null], ["---", null]]
+}

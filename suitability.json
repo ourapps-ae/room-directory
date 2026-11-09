@@ -1,0 +1,26 @@
+{
+  "format": 1,
+  "jobs": [
+    "room-directory"
+  ],
+  "profiles": [
+    {
+      "id": "any",
+      "load": {
+        "concurrentPeople": 1000
+      },
+      "cost": "none",
+      "regions": [
+        "any"
+      ],
+      "compliance": [],
+      "provider": {
+        "name": "any durable-object runtime",
+        "tier": "any",
+        "limitsSource": null
+      },
+      "notes": "Limit 1000 is the component's own default maxConnections setting (the recipe's large band), not a provider limit. No provider limits were checked for this component; whether one Cloudflare Durable Object holds 1000 hibernating connections was not checked."
+    }
+  ],
+  "notes": "Pure list logic has no cost. The directory object runs wherever the injected runtime base class exists; the recipe uses Cloudflare Durable Objects (see realtime-rooms)."
+}
