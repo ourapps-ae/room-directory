@@ -24,10 +24,11 @@ Dependencies: none.
 `tools.lock.json` pins verification tools: node 26.5.0, python3 3.12.8, swiftc 6.4.2, kotlinc 2.2.0, java 26.0.1. Licence wording remains deferred.
 
 ## Provided interfaces
-- `interfaces/room-directory.json` defines `room-directory` (ae/room-directory) version 1.0.0.
+- `room-directory` (ae/room-directory) version 1.0.0 is described by three documents: `interfaces/room-directory.json` (OpenRPC 1.3.2) for the library calls, tagged with the languages that provide them (`typescript`, `swift`, `kotlin`); `interfaces/room-directory-http.json` (OpenAPI 3.1.1) for the requests the Directory object answers; `interfaces/room-directory-live.json` (AsyncAPI 3.1.0) for its live `{type:"rooms"}` list. Types are JSON Schema 2020-12.
+- `interfaces/room-directory-state.schema.json` is the JSON Schema 2020-12 document (ae/room-directory-state 1.0.0) of the stored list and its ndjson export lines.
 
 ## Required interfaces
-- `room-session` (ae/room-session) version 1.0.0, supplied by the recipe or application.
+- `room-session` (ae/room-session) version 1.0.0, supplied by the recipe or application; `interfaces/required-room-session.json` is a copy of the providing component's interface document.
 
 ## Integration
 Server: `createDirectoryClass(DurableObjectBase, { roomIds, maxConnections })` returns the directory class; rooms announce themselves with `POST` (upsert) and `DELETE ?id=`. The application can pass `roomIds` for rooms that always exist; each is asked directly the first time it is missing. Web: `watchRooms(connect, onChange)` takes a connector with the shape of the realtime-rooms `Live` class and reports only changed lists and changes of server reachability. Apple and Android: decode the `{type:"rooms"}` message into `RoomInfo` and use `RoomDirectory.entryAction`, `describe`, `findByCode`. `examples/consumer.ts` runs a home screen without the game. The component expects the room-session component to supply the rooms that post their entries and the `/room` summary route used to ask a missing room; it imports nothing from it.

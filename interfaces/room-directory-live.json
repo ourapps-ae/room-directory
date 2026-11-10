@@ -1,0 +1,139 @@
+{
+  "asyncapi": "3.1.0",
+  "info": {
+    "title": "ae/room-directory",
+    "version": "1.0.0",
+    "description": "The Directory object's live list, from the object's side. Text frames. The object answers ping with pong without waking.",
+    "license": {
+      "name": "Apache-2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0"
+    }
+  },
+  "defaultContentType": "application/json",
+  "channels": {
+    "rooms": {
+      "address": "/ws",
+      "description": "Reached by home screens through the room service's /rooms/ws.",
+      "messages": {
+        "rooms": {
+          "$ref": "#/components/messages/rooms"
+        },
+        "ping": {
+          "$ref": "#/components/messages/ping"
+        },
+        "pong": {
+          "$ref": "#/components/messages/pong"
+        }
+      }
+    }
+  },
+  "operations": {
+    "sendRooms": {
+      "action": "send",
+      "channel": {
+        "$ref": "#/channels/rooms"
+      },
+      "summary": "The whole list on connect and after every change.",
+      "messages": [
+        {
+          "$ref": "#/channels/rooms/messages/rooms"
+        },
+        {
+          "$ref": "#/channels/rooms/messages/pong"
+        }
+      ]
+    },
+    "receivePing": {
+      "action": "receive",
+      "channel": {
+        "$ref": "#/channels/rooms"
+      },
+      "messages": [
+        {
+          "$ref": "#/channels/rooms/messages/ping"
+        }
+      ]
+    }
+  },
+  "components": {
+    "schemas": {
+      "RoomEntry": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Room id."
+          },
+          "status": {
+            "type": "string",
+            "description": "Game status; statuses in openStatuses (default lobby) are open for joining."
+          },
+          "playerCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "names": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Player names."
+          },
+          "code": {
+            "type": "string",
+            "description": "Code people type to join; case, spaces and hyphens do not matter."
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "playerCount",
+          "names"
+        ],
+        "additionalProperties": false,
+        "description": "One room as the home list shows it (TypeScript RoomEntry, Swift and Kotlin RoomInfo)."
+      }
+    },
+    "messages": {
+      "rooms": {
+        "name": "rooms",
+        "contentType": "application/json",
+        "payload": {
+          "type": "object",
+          "required": [
+            "type",
+            "rooms"
+          ],
+          "properties": {
+            "type": {
+              "const": "rooms"
+            },
+            "rooms": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/RoomEntry"
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "ping": {
+        "name": "ping",
+        "contentType": "text/plain",
+        "payload": {
+          "type": "string",
+          "const": "ping"
+        }
+      },
+      "pong": {
+        "name": "pong",
+        "contentType": "text/plain",
+        "payload": {
+          "type": "string",
+          "const": "pong"
+        }
+      }
+    }
+  }
+}
