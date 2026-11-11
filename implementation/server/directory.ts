@@ -40,7 +40,7 @@ function acceptWithWorkers(ctx: DirectoryContext, first: string): Response {
   return new Response(null, { status: 101, webSocket: pair[0] } as ResponseInit);
 }
 
-export function createDirectoryClass<Base extends new (ctx: any, env: any) => { ctx: DirectoryContext; env: DirectoryEnvironment }>(
+export function createDirectoryClass<Base extends abstract new (...args: any[]) => object>(
   DurableObjectBase: Base,
   options: DirectoryOptions,
 ) {
@@ -48,11 +48,19 @@ export function createDirectoryClass<Base extends new (ctx: any, env: any) => { 
   const accept = options.accept ?? acceptWithWorkers;
   const order = options.roomIds ?? [];
   const listOptions: ListOptions = { order, openStatuses: options.openStatuses };
-  return class Directory extends DurableObjectBase {
+  // The Workers base class is declared abstract; the runtime constructs the subclass returned here.
+  const Base = DurableObjectBase as unknown as new (...args: any[]) => object;
+  return class Directory extends Base {
     rooms: Rooms = {};
+    readonly context: DirectoryContext;
+    readonly bindings: DirectoryEnvironment;
 
-    constructor(ctx: DirectoryContext, env: DirectoryEnvironment) {
-      super(ctx, env);
+    // A mixin constructor takes its arguments as one list: (ctx, env), as the runtime passes them.
+    constructor(...args: any[]) {
+      super(...args);
+      const [ctx, env] = args as [DirectoryContext, DirectoryEnvironment];
+      this.context = ctx;
+      this.bindings = env;
       const WorkersPair = (globalThis as unknown as { WebSocketRequestResponsePair?: new (a: string, b: string) => unknown }).WebSocketRequestResponsePair;
       // Keep-alive pings are answered without waking the object.
       if (WorkersPair) ctx.setWebSocketAutoResponse?.(new WorkersPair("ping", "pong"));
@@ -63,12 +71,12 @@ export function createDirectoryClass<Base extends new (ctx: any, env: any) => { 
 
     async fetch(request: Request): Promise<Response> {
       // An object can outlive a deploy; restart onto the new code when a newer caller arrives.
-      if ((request.headers.get("x-code-version") ?? "") !== (this.env.CODE_VERSION ?? "")) this.ctx.abort?.("new deploy");
+      if ((request.headers.get("x-code-version") ?? "") !== (this.bindings.CODE_VERSION ?? "")) this.context.abort?.("new deploy");
       const url = new URL(request.url);
       if (url.pathname === "/ws") {
         if (request.headers.get("upgrade")?.toLowerCase() !== "websocket") return Response.json({ error: "badRequest", message: "Expected a WebSocket." }, { status: 426 });
-        if (this.ctx.getWebSockets().length >= options.maxConnections) return Response.json({ error: "badRequest", message: "Too many connections." }, { status: 503 });
-        return accept(this.ctx, announcement(await this.list()));
+        if (this.context.getWebSockets().length >= options.maxConnections) return Response.json({ error: "badRequest", message: "Too many connections." }, { status: 503 });
+        return accept(this.context, announcement(await this.list()));
       }
       if (request.method === "POST") {
         const entry = (await request.json()) as RoomEntry;
@@ -88,9 +96,9 @@ export function createDirectoryClass<Base extends new (ctx: any, env: any) => { 
     }
 
     private async changed(): Promise<Response> {
-      await this.ctx.storage.put(KEY, this.rooms);
+      await this.context.storage.put(KEY, this.rooms);
       const message = announcement(await this.list());
-      for (const ws of this.ctx.getWebSockets()) {
+      for (const ws of this.context.getWebSockets()) {
         try { ws.send(message); } catch { /* closed: the runtime drops it */ }
       }
       return new Response(null, { status: 204 });
@@ -100,9 +108,9 @@ export function createDirectoryClass<Base extends new (ctx: any, env: any) => { 
     private async list(): Promise<RoomEntry[]> {
       const missing = order.filter((id) => !this.rooms[id]);
       if (missing.length) {
-        const entries = await Promise.all(missing.map((id) => ask(this.env, id)));
+        const entries = await Promise.all(missing.map((id) => ask(this.bindings, id)));
         for (const entry of entries) this.rooms = upsertRoom(this.rooms, entry);
-        await this.ctx.storage.put(KEY, this.rooms);
+        await this.context.storage.put(KEY, this.rooms);
       }
       return listRooms(this.rooms, listOptions);
     }
