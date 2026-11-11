@@ -21,7 +21,7 @@ Two settings. `roomCapacity` is the number of seats after which an open room sho
 - `implementation/web/directory-client.ts` -> `components/room-directory/web/directory-client.ts`
 
 Dependencies: none.
-`tools.lock.json` pins verification tools: node 26.5.0, python3 3.12.8, swiftc 6.4.2, kotlinc 2.2.0, java 26.0.1. Licence wording remains deferred.
+`tools.lock.json` pins verification tools: node 26.5, python3 3.12, swiftc 6.4, kotlinc 2.2, java 26.0. Licence wording remains deferred.
 
 ## Provided interfaces
 - `room-directory` (ae/room-directory) version 1.0.0 is described by three documents: `interfaces/room-directory.json` (OpenRPC 1.3.2) for the library calls, tagged with the languages that provide them (`typescript`, `swift`, `kotlin`); `interfaces/room-directory-http.json` (OpenAPI 3.1.1) for the requests the Directory object answers; `interfaces/room-directory-live.json` (AsyncAPI 3.1.0) for its live `{type:"rooms"}` list. Types are JSON Schema 2020-12.
@@ -42,9 +42,9 @@ The directory object needs a hosting runtime that provides a durable object with
 ## Verification
 Required-local: `node --test tests/web.test.ts` checks list operations, join by code, entry actions, change detection, the directory object with fake storage and sockets (list, update, announce, remove, restart, upgrade and cap checks, deploy restart), the web watcher and the example. Platform: `python3 tests/native.py apple` compiles and runs the Swift checks against `tests/fixtures/rooms.json`; `python3 tests/native.py android` compiles the Kotlin checks (needs kotlinc, not installed on the authoring machine, so not run there).
 
-- `node --test tests/web.test.ts` (web, required-local; tools: node 26.5.0)
-- `python3 tests/native.py apple` (apple, platform; tools: python3 3.12.8, swiftc 6.4.2)
-- `python3 tests/native.py android` (android, platform; tools: python3 3.12.8, kotlinc 2.2.0, java 26.0.1)
+- `node --test tests/web.test.ts` (web, required-local; tools: node 26.5)
+- `python3 tests/native.py apple` (apple, platform; tools: python3 3.12, swiftc 6.4)
+- `python3 tests/native.py android` (android, platform; tools: python3 3.12, kotlinc 2.2, java 26.0)
 
 ## Scenarios and presentation
 A home screen shows three rooms; the second is mid-game so its button says watch; a person types a code with spaces and lower case and the right room is selected; the server restarts and the list is restored from storage; the connection drops and the screen says the server cannot be reached until the next list arrives.

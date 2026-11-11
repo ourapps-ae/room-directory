@@ -17,7 +17,7 @@ Supply a durable object base class from the hosting runtime and bind the directo
 ## How to check
 From the component directory:
 
-- `node --test tests/web.test.ts` (web, required-local; tools: node 26.5.0)
-- `python3 tests/native.py apple` (apple, platform; tools: python3 3.12.8, swiftc 6.4.2)
-- `python3 tests/native.py android` (android, platform; tools: python3 3.12.8, kotlinc 2.2.0, java 26.0.1)
-- `python3.12 -B /Users/george/Projects/com/my/tools/check_component.py components/room-directory` validates the manifest, sidecars and runs the required-local suite.
+- `node --test tests/web.test.ts` (web, required-local; tools: node 26.5)
+- `python3 tests/native.py apple` (apple, platform; tools: python3 3.12, swiftc 6.4)
+- `python3 tests/native.py android` (android, platform; tools: python3 3.12, kotlinc 2.2, java 26.0)
+- `python3 -m aepm review <digest> --store STORE --policy POLICY --trusted --allow-network` checks an archive fetched with `python3 -m aepm fetch ourapps-ae/room-directory@VERSION --store STORE --from https://ourapps.app` and runs its suites.
