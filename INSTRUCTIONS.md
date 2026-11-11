@@ -3,7 +3,7 @@
 ## For the agent
 Select this component for any application that shows a list of rooms or tables before joining. Set `roomCapacity` to the number of seats of one room. Connect its `room-session` requirement to the realtime-rooms component so rooms post their entries to the directory. Pass the application's fixed room ids to `createDirectoryClass` only if rooms always exist.
 
-- Select package `ourapps-ae/room-directory` version `0.4.0`.
+- Select package `ourapps-ae/room-directory` version `0.4.1`.
 - Settings to configure:
   - `roomCapacity` (integer; optional; default `9`)
   - `maxConnections` (integer; optional; default `1000`)
