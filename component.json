@@ -31,9 +31,21 @@
       "template": false
     },
     {
+      "destination": "components/room-directory/server/index.ts",
+      "executable": false,
+      "source": "implementation/server/index.ts",
+      "template": false
+    },
+    {
       "destination": "components/room-directory/web/directory-client.ts",
       "executable": false,
       "source": "implementation/web/directory-client.ts",
+      "template": false
+    },
+    {
+      "destination": "components/room-directory/web/index.ts",
+      "executable": false,
+      "source": "implementation/web/index.ts",
       "template": false
     }
   ],
@@ -46,7 +58,9 @@
       "components/room-directory/server/directory-core.ts",
       "components/room-directory/server/directory-migration.ts",
       "components/room-directory/server/directory.ts",
-      "components/room-directory/web/directory-client.ts"
+      "components/room-directory/server/index.ts",
+      "components/room-directory/web/directory-client.ts",
+      "components/room-directory/web/index.ts"
     ]
   },
   "collect": [
@@ -137,7 +151,15 @@
     },
     {
       "executable": false,
+      "path": "implementation/server/index.ts"
+    },
+    {
+      "executable": false,
       "path": "implementation/web/directory-client.ts"
+    },
+    {
+      "executable": false,
+      "path": "implementation/web/index.ts"
     },
     {
       "executable": false,

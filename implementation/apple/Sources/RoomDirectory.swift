@@ -21,7 +21,7 @@ enum EntryAction: Equatable { case join, rejoin, watch, full, none }
 
 enum RoomKind: Equatable { case empty, inGame, lobby }
 
-enum RoomDirectory {
+public enum RoomDirectory {
     static let defaultOpenStatuses: Set<String> = ["lobby"]
 
     static func listingChanged(_ previous: [RoomInfo]?, _ next: [RoomInfo]) -> Bool {
