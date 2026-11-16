@@ -1,0 +1,13 @@
+import { assert, load } from './runtime.mjs';
+const m = await load('server/index.ts');
+const room = { id: 'class-room', code: 'ABC234', status: 'lobby', playerCount: 1, names: ['Ada'] };
+const empty = {};
+const rooms = m.upsertRoom(empty, room);
+assert.deepEqual(empty, {});
+assert.equal(m.findByCode(rooms, 'abc-234').id, room.id);
+assert.equal(m.findByCode(rooms, ''), null);
+assert.equal(m.listRooms(rooms).length, 1);
+assert.equal(m.entryAction(room, 'Bob', 2), 'join');
+assert.equal(m.entryAction(room, 'Bob', 1), 'full');
+assert.deepEqual(m.removeRoom(rooms, room.id), {});
+assert.deepEqual(m.importAll(m.exportAll(rooms)), rooms);

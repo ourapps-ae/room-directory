@@ -1,6 +1,6 @@
 {
   "name": "room-directory",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "title": "Room directory",
   "description": "Lists open rooms, announces changes to watching screens and lets a person join by code.",
   "facilities": [
@@ -44,10 +44,10 @@
     }
   ],
   "platforms": [
-    "server",
-    "web",
+    "android",
     "apple",
-    "android"
+    "server",
+    "web"
   ],
   "tools": {
     "node": "26.5.0",
@@ -149,5 +149,162 @@
       }
     ],
     "notes": "Pure list logic has no cost. The directory object runs wherever the injected runtime base class exists; the recipe uses Cloudflare Durable Objects (see realtime-rooms)."
+  },
+  "classes": [
+    {
+      "reference": {
+        "name": "ourapps-ae/room-directory-class",
+        "version": "1.0.0",
+        "digest": "7a3b8e47490ccd48a71eaacdba95aece8689dfec88a846d0bec6198c7ec7e207"
+      },
+      "descriptor": {
+        "format": 1,
+        "name": "ourapps-ae/room-directory-class",
+        "version": "1.0.0",
+        "provides": [
+          {
+            "type": "ae/room-directory",
+            "version": "1.0.0",
+            "path": "classes/room-directory-class/room-directory.json",
+            "modules": {
+              "web": [
+                "web/index.ts"
+              ],
+              "server": [
+                "server/index.ts"
+              ],
+              "android": [
+                "android/src/main/java"
+              ],
+              "ios": [
+                "apple/Sources"
+              ],
+              "macos": [
+                "apple/Sources"
+              ],
+              "tvos": [
+                "apple/Sources"
+              ],
+              "windows": [
+                "web/index.ts"
+              ]
+            }
+          }
+        ],
+        "requires": [
+          {
+            "type": "ae/room-session",
+            "version": "1.0.0"
+          }
+        ],
+        "settings": {
+          "type": "object",
+          "properties": {
+            "roomCapacity": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "roomCapacity"
+          ],
+          "additionalProperties": false
+        },
+        "inventory": [
+          {
+            "path": "classes/room-directory-class/check.mjs",
+            "digest": "0a9eb096145a6f0928ecfc5bcc646ec2a2c778ca6d3cfb763bb9b6b2f266a06a"
+          },
+          {
+            "path": "classes/room-directory-class/room-directory.json",
+            "digest": "742d6bccf102c762527f00b1a3c4d6f7216405dba3d090a898e5ccbb7a4a0092"
+          },
+          {
+            "path": "classes/room-directory-class/runtime.mjs",
+            "digest": "7440f3891614c423f74668cb5a2445fea58bbfa4d7c740c8e8a855d1d9300d43"
+          }
+        ],
+        "verification": [
+          {
+            "id": "shared",
+            "root": "package",
+            "argv": [
+              "node",
+              "classes/room-directory-class/check.mjs"
+            ],
+            "cwd": ".",
+            "prepare": [],
+            "tools": {
+              "node": "26.5"
+            },
+            "fixtures": [
+              "classes/room-directory-class/check.mjs"
+            ],
+            "locks": [],
+            "network": false,
+            "timeoutSeconds": 60,
+            "expectedExit": 0,
+            "scope": "required-local",
+            "requirements": []
+          }
+        ]
+      }
+    }
+  ],
+  "implements": [
+    {
+      "name": "ourapps-ae/room-directory-class",
+      "version": "1.0.0",
+      "digest": "7a3b8e47490ccd48a71eaacdba95aece8689dfec88a846d0bec6198c7ec7e207"
+    }
+  ],
+  "upstream": [],
+  "compatibility": {
+    "runtimes": {
+      "node": ">=26.5.0 <27.0.0",
+      "swift": "=6.4.2",
+      "ios": ">=17.0.0",
+      "macos": ">=14.0.0",
+      "tvos": ">=17.0.0",
+      "kotlin": "=2.3.20",
+      "java": ">=17.0.0 <27.0.0",
+      "android": ">=8.0.0"
+    },
+    "frameworks": {},
+    "dependencies": [],
+    "styles": {
+      "scope": "none",
+      "namespaces": [],
+      "conflicts": []
+    }
+  },
+  "maintenance": {
+    "owners": [
+      "Level N Ltd"
+    ],
+    "contact": "https://github.com/ourapps-ae/room-directory/issues",
+    "repository": "https://github.com/ourapps-ae/room-directory",
+    "updates": {
+      "source": "https://github.com/ourapps-ae/room-directory/releases",
+      "strategy": "manual"
+    }
+  },
+  "supportedPlatforms": [
+    "android",
+    "ios",
+    "macos",
+    "server",
+    "tvos",
+    "web",
+    "windows"
+  ],
+  "licence": "Apache-2.0",
+  "licenceFile": "LICENCE",
+  "noticeFile": "NOTICE",
+  "templates": [],
+  "modules": {
+    "web": "web/index.ts",
+    "server": "server/index.ts",
+    "android": "android/src/main/java",
+    "apple": "apple/Sources"
   }
 }
