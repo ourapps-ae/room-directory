@@ -1,6 +1,6 @@
 {
   "name": "room-directory",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "title": "Room directory",
   "description": "Lists open rooms, announces changes to watching screens and lets a person join by code.",
   "facilities": [
@@ -154,13 +154,17 @@
     {
       "reference": {
         "name": "ourapps-ae/room-directory-class",
-        "version": "1.0.0",
-        "digest": "7a3b8e47490ccd48a71eaacdba95aece8689dfec88a846d0bec6198c7ec7e207"
+        "version": "1.1.0",
+        "digest": "e79fe18442fe0927c23ff6a2ae779af267c58a6fec662a4abe1f542a5547f138"
       },
       "descriptor": {
-        "format": 1,
+        "format": 2,
         "name": "ourapps-ae/room-directory-class",
-        "version": "1.0.0",
+        "version": "1.1.0",
+        "title": "Room directory",
+        "summary": "The list of rooms with their status and who is in them, kept current",
+        "category": "data-and-storage/directories",
+        "presentation": "none",
         "provides": [
           {
             "type": "ae/room-directory",
@@ -253,8 +257,8 @@
   "implements": [
     {
       "name": "ourapps-ae/room-directory-class",
-      "version": "1.0.0",
-      "digest": "7a3b8e47490ccd48a71eaacdba95aece8689dfec88a846d0bec6198c7ec7e207"
+      "version": "1.1.0",
+      "digest": "e79fe18442fe0927c23ff6a2ae779af267c58a6fec662a4abe1f542a5547f138"
     }
   ],
   "upstream": [],
@@ -265,7 +269,7 @@
       "ios": ">=17.0.0",
       "macos": ">=14.0.0",
       "tvos": ">=17.0.0",
-      "kotlin": "=2.3.20",
+      "kotlin": "=2.4.21",
       "java": ">=17.0.0 <27.0.0",
       "android": ">=8.0.0"
     },
@@ -540,5 +544,11 @@
         "manual": "Without the package manager, install Node 26 from nodejs.org (the installer, or the zip or tar archive with its folder put first on PATH); on Linux also from the NodeSource repository."
       }
     ]
-  }
+  },
+  "release": {
+    "channel": "features",
+    "fixes": []
+  },
+  "images": [],
+  "vulnerabilityWaivers": []
 }
